@@ -1,0 +1,57 @@
+#mainContainer{
+    width: 84%;
+}
+#main{
+    width:100%;
+    height: 770px;
+}
+#info{
+    float: right;
+    color: white;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.loginInfo{
+    margin-top: 10px;
+}
+#footer{
+    width: 69%;
+    bottom:0px;
+}
+.tree
+{
+   /* width:250px;*/
+    min-height:200px;
+    margin: 10px;
+    /*border: 1px solid #ccc;*/
+    overflow: auto;
+    height: auto;
+    float: left;
+}
+.rule{
+    /*width:240px;*/
+    min-height:200px;
+    margin: 10px;
+    /*border: 1px solid #ccc;*/
+    /*overflow: auto;*/
+    height: auto;
+    float: left;
+    display: none;
+}
+#preContent{
+    width: 560px;
+}
+#fileContent{
+    margin-top: 70px;
+    float: left;
+    width: 100%;
+}
+#fileDiv{
+    /*margin-left: 100px;*/
+    /* width: 55%;*/
+    width: 1000px;
+}
+#preDiv{
+    display:none ;
+    width: 1000px;
+}

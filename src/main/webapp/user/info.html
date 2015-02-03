@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script type="text/javascript">
+        $(function(){
+            $("#userImage img").attr("src","img/headpic.jpg");
+            $("#myImage").click(function(){
+                $("#myInfo").load("user/imageupload.html");
+            });
+            $.post($.URL.user.getUserInfo,null,getUserInfoCallback,"json");
+        });
+       function getUserInfoCallback(data){
+            if(data.code==200){
+                var name=data.data.name;
+                var age=data.data.age;
+                var sex=data.data.sex;
+                var headPhoto=data.data.headPhoto;
+                $("#name").text(name);
+                $("#age").text(age);
+                $("#sex").text(sex);
+                if(headPhoto==null||headPhoto==''){
+                $("#userImage img").attr("src","img/headpic.jpg");
+                }else{
+                $("#userImage img").attr("src",headPhoto);
+                }
+
+            }
+       }
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span10" id="myInfo">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>
+                        姓名
+                    </td>
+                    <td id="name">
+
+                    </td>
+                    <td>
+                        年龄
+                    </td>
+                    <td id="age">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        性别
+                    </td>
+                    <td id="sex">
+
+                    </td>
+                    <td>
+                        籍贯
+                    </td>
+                    <td>
+                        暂无
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        学校
+                    </td>
+                    <td>
+                        暂无
+                    </td>
+                    <td>
+                        出生日期
+                    </td>
+                    <td>
+                        暂无
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        政治面貌
+                    </td>
+                    <td>
+                        暂无
+                    </td>
+                    <td>
+                        个人爱好
+                    </td>
+                    <td>
+                        暂无
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="span2">
+            <div id="userImage" width="100px;"height="100px" style="cursor: pointer"><img  src=""  id="myImage"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link href="css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="css/layoutit.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/fileprocess.css"/>
+    <link rel="stylesheet" type="text/css" href="css/status.css"/>
+    <link href="css/jquery.Jcrop.css" rel="stylesheet" type="text/css" />
+    <!--[if lt IE 9]>
+    <script src="http://apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
+    <![endif]-->
+   <!-- <link rel="shortcut icon" href="img/favicon.png">-->
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.0.0/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="js/jquery.htmlClean.js"></script>
+    <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="ckeditor/config.js"></script>
+    <script type="text/javascript" src="js/scripts.js"></script>
+<!--    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>-->
+    <script type="text/javascript" src="user/passwordValidator/js/jquery-1.6.2.min.js"></script>
+    <script src="js/jquery.json-2.4.min.js" type="text/javascript"></script>
+   <!-- <script type="text/javascript" src="js/jquery.js"></script>-->
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/status.js"></script>
+    <script src="js/ajaxfileupload.js" type="text/javascript"></script>
+    <script src="js/jquery.Jcrop.min.js" type="text/javascript"></script>
+    <script src="user/js/jquery.form.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://validform.rjboy.cn/Validform/v5.3.2/Validform_v5.3.2_min.js"></script>
+    <script type="text/javascript" src="user/passwordValidator/js/passwordStrength-min.js"></script>
+    <script type="text/javascript">
+        var userName;
+        $(document).ready(function(){
+            init();
+            tabClick();
+        });
+        function init(){
+            $("#panel-326647").load("index/indexContent.html");
+            $("#register").click(function(){
+                $("#content").load("register.html");
+            });
+            $("#modal-body").load("login.html");
+            getSession();
+        }
+        function tabClick(){
+            $("#ziliao").click(function(){
+                ziliaoClick();
+            });
+            $("#xinxi").click(function(){
+                xinxiClick();
+            });
+            $("#wenjian").click(function(){
+                wenjianClick();
+            });
+        }
+        function ziliaoClick(){
+            $("#panel-1124").html("");
+            getSession();
+            if(userName==null){
+                $("#panel-1124").html("请先登录!");
+            }else{
+                $("#panel-1124").load("ziliao/ziliao.html");
+            }
+        }
+        function xinxiClick(){
+            $("#panel-1125").html("");
+            getSession();
+            if(userName==null){
+                $("#panel-1125").html("请先登录!");
+            }else{
+                $("#panel-1125").load("xinxi/xinxi.html");
+            }
+        }
+        function wenjianClick(){
+            $("#panel-1126").html("");
+            getSession();
+            if(userName==null){
+                $("#panel-1126").html("请先登录!");
+            }else{
+                $("#panel-1126").load("fileprocess/fileprocess.html");
+            }
+        }
+        function exit(){
+            $.post($.URL.user.exit,null,exitCallback,"json");
+        }
+        function myInfo(){
+            $("#content").load("user/myInfo.html");
+        }
+        function getSession(){
+            $.post($.URL.user.getSession,null,getSessionCallback,"json");
+        }
+        function getSessionCallback(data){
+            if(data.code==200){
+                userName=data.data.name;
+                var welcom="<li class='dropdown pull-right'><a href='#' data-toggle='dropdown' class='dropdown-toggle'>欢迎您!"+userName+"<strong class='caret'></strong></a><ul class='dropdown-menu'>"+
+                        "<li><a href='javascript:;' onclick='myInfo()'>个人信息</a></li><li><a href='javascript:;' onclick='exit()'>退出</a></li></ul></li>";
+                $("#info").html(welcom);
+            }else{
+                userName=null;
+                $("#info").html("<a id='modal-981505' href='#modal-container-981505' role='button'  data-toggle='modal' style='cursor: pointer;color: white'>登录</a>");
+            }
+        }
+        function exitCallback(data){
+            if(data.code==200){
+                alert("已退出系统");
+                init();
+                clearTab();
+                $("#infoDiv").html("<div style='margin-left: 20px'>已退出系统!请重新登录</div>");
+            }
+        }
+        function clearTab(){
+            $("#panel-1124").html("请先登录!");
+            $("#panel-1125").html("请先登录!");
+            $("#panel-1126").html("请先登录!");
+        }
+    </script>
+</head>
+<body>
+<div id="mainContainer">
+<div id="main">
+<div id="titleMain">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="index.html">文件处理</a>
+                <div id="info"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div id="modal-container-981505" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="close">×</button>
+                    <h3 id="myModalLabel">
+                        登录
+                    </h3>
+                </div>
+                <div class="modal-body" id="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button> <button class="btn btn-primary" id="register" data-dismiss="modal" aria-hidden="true">注册</button>
+                </div>
+            </div>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#panel-326647" data-toggle="tab">首页</a>
+                    </li>
+                    <li id="ziliao">
+                        <a href="#panel-1124" data-toggle="tab">资料</a>
+                    </li>
+                    <li id="xinxi">
+                        <a href="#panel-1125" data-toggle="tab">信息</a>
+                    </li>
+                    <li id="wenjian">
+                        <a href="#panel-1126" data-toggle="tab">文件处理</a>
+                    </li>
+                    <li class="dropdown pull-right">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">下拉<strong class="caret"></strong></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">操作</a>
+                            </li>
+                            <li>
+                                <a href="#">设置栏目</a>
+                            </li>
+                            <li>
+                                <a href="#">更多设置</a>
+                            </li>
+                            <li class="divider">
+                            </li>
+                            <li>
+                                <a href="#">分割线</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="panel-326647">
+
+                    </div>
+                    <div class="tab-pane" id="panel-1124">
+
+                    </div>
+                    <div class="tab-pane" id="panel-1125">
+
+                    </div>
+                    <div class="tab-pane" id="panel-1126">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div id="footer">
+    <address> <strong>Twitter, Inc.</strong><br /> 795 Folsom Ave, Suite 600<br /> San Francisco, CA 94107<br /> <abbr title="Phone">P:</abbr> (123) 456-7890</address>
+</div>
+</div>
+</body>
+</html>

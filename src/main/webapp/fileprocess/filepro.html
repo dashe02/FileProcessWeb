@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="lib/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+    <script src="lib/ligerUI/js/core/base.js" type="text/javascript"></script>
+    <script src="lib/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
+    <script src="lib/ligerUI/js/plugins/ligerComboBox.js" type="text/javascript"></script>
+<!--    <script src="lib/ligerUI/js/plugins/ligerDialog.js" type="text/javascript"></script>
+    <script src="js/address.js"  type="text/javascript"></script>-->
+    <script type="text/javascript">
+        var manager;
+        $(function ()
+        {
+            $.post($.URL.file.getUploadedFiles,null,getUploadedFilesCallback,"json");
+            function getUploadedFilesCallback(data){
+                if(data.code==200){
+                    if(data.data==null||data==undefined){
+                          alert("未上传文件!");
+                    }else{
+                        var fileData=[];
+                        var itemD={};
+                        itemD.text="已上传文件";
+                        var childData=[];
+                        for(i=0;i<data.data.length;i++){
+                            var item={};
+                            item.text=data.data[i];
+                            childData.push(item);
+                        }
+                        itemD.children=childData;
+                        fileData.push(itemD);
+                        $("#tree1").ligerTree({
+                            data: fileData,
+                            isExpand:true,
+                            slide:true,
+                            nodeWidth:200
+                        });
+                        manager=$("#tree1").ligerGetTreeManager();
+                        /*manager.collapseAll();*/
+                        $("#tree1").ligerTree({onCheck:function(node,e){
+                              $("#goRule").attr("disabled",false);
+                              if(manager.getChecked()==null||manager.getChecked()==""){
+                                $("#goRule").attr("disabled",true);
+                              }
+                        }});
+                    }
+                }
+            }
+            $("#goRule").click(function(){
+                $("#rule").css("display","block");
+            });
+            $("#merge").click(function(){
+                goChecked($.URL.file.mergeFile,"0");
+            });
+            $("#process").click(function(){
+                if($("#line").val()==null||$("#line").val()==""){
+                     alert("请输入行数!");
+                }else{
+                    var line=$("#line").val();
+                    goChecked($.URL.file.dealFileByLine,line);
+                }
+            });
+        });
+        function goChecked(URL,line){
+            var nodes=manager.getChecked();
+            var text="";
+            for(var i=0;i<nodes.length;i++){
+                text+=nodes[i].data.text+",";
+            }
+            $.post(URL,{"text":text,"line":line},URLCallback,"json");
+        }
+        function URLCallback(data){
+            if(data.code==200){
+                var d={};
+                d.status="3";
+                $.post($.URL.file.changeStatus,d,changeStatusCallback,"json");
+            }
+        }
+        function changeStatusCallback(data){
+            if(data.code==200){
+                $.post($.URL.file.getFileStatus,null,getFileStatusCallback,"json");
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="fileDiv">
+    <div style="width: 100%;margin-left: 120px">
+                        <div class="tree">
+                            <ul id="tree1" style="width: 224px"></ul>
+                        </div>
+                        <div>
+                            <button class="btn"  id="goRule" style="float: left;margin-top: 50px" disabled>定义规则</button>
+                        </div>
+                         <div class="rule" id="rule">
+                             <div class="container-fluid">
+                                 <div class="row-fluid">
+                                     <div class="span12">
+                                         <div class="tabbable">
+                                             <ul class="nav nav-tabs">
+                                                 <li class="active">
+                                                     <a href="#panel-1127" data-toggle="tab">合并文件</a>
+                                                 </li>
+                                                 <li id="ziliao">
+                                                     <a href="#panel-1128" data-toggle="tab">文件换行处理</a>
+                                                 </li>
+                                                 <li id="xinxi">
+                                                     <a href="#panel-1129" data-toggle="tab">自定义</a>
+                                                 </li>
+                                             </ul>
+                                             <div class="tab-content">
+                                                 <div class="tab-pane active" id="panel-1127">
+                                                     <p>
+                                                         将所选择的文件合并到一个文件
+                                                     </p>
+                                                     <div><button class="btn" style="float: right;" id="merge">合并</button></div>
+                                                 </div>
+                                                 <div class="tab-pane" id="panel-1128">
+                                                     <p>
+                                                         定义要提取的行数
+                                                     </p>
+                                                     <div>
+                                                         <input type="text" placeholder="请输入行数" id="line">
+                                                     </div>
+                                                     <div><button class="btn" style="float: right;" id="process">处理</button></div>
+                                                 </div>
+                                                 <div class="tab-pane" id="panel-1129">
+                                                     <p>
+                                                         自定义
+                                                     </p>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         </div>
+</div>
+<!--<div style="display:none">
+
+</div>-->
+</body>
+</html>

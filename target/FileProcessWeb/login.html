@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101189006" data-redirecturi="http://www.cseicms.com/fileProcess/index.html" charset="utf-8"></script>
+    <script type="text/javascript">
+        $(function(){
+            $("#userName").focus(function(){
+                $("#user").html("");
+            });
+            $("#userName").blur(function(){
+                var data={};
+                data.userName=$("#userName").val();
+                data.password=$("#password").val();
+                $.post($.URL.user.isExistUser,data,isExistUserCallback,"json");
+            });
+            $("#login").click(function(){
+                $("#loginInfo").html("");
+                var data={};
+                data.userName=$("#userName").val();
+                data.password=$("#password").val();
+                $.post($.URL.user.login,data,loginCallback,"json");
+            });
+        });
+        function isExistUserCallback(data){
+            if(data.code==200){
+
+            }else{
+              $("#user").html("<font style='color:red'>用户不存在,请先注册!</font>");
+            }
+        }
+        function loginCallback(data){
+            if(data.code==200){
+              $("#loginInfo").html("登录成功!");
+              $("#close").click();
+              getSession();
+            }else{
+              $("#loginInfo").html("<font style='color: red'>登录失败!</font>");
+            }
+        }
+        function getSession(){
+            $.post($.URL.user.getSession,null,getSessionCallback,"json");
+        }
+        function getSessionCallback(data){
+            if(data.code==200){
+                userName=data.data.name;
+                var welcom="<li class='dropdown pull-right'><a href='#' data-toggle='dropdown' class='dropdown-toggle'>欢迎您!"+userName+"<strong class='caret'></strong></a><ul class='dropdown-menu'>"+
+                "<li><a href='javascript:;' onclick='myInfo()'>个人信息</a></li><li><a href='javascript:;' onclick='exit()'>退出</a></li></ul></li>";
+                $("#info").html(welcom);
+                $("#panel-1125").load("xinxi/xinxi.html");
+                $("#panel-1124").load("ziliao/ziliao.html");
+                $("#panel-1126").load("fileprocess/fileprocess.html");
+            }else{
+                userName=null;
+                $("#info").html("<a id='modal-981505' href='#modal-container-981505' role='button'  data-toggle='modal' style='cursor: pointer;color: white'>登录</a>");
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#panel-326646" data-toggle="tab">用户登录</a>
+        </li>
+        <li>
+            <a href="#panel-1123" data-toggle="tab">快速登录</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="panel-326646">
+            <div>
+                <fieldset>
+                    <label contenteditable="false">用户名:</label>
+                    <input type="text" placeholder="请输入用户名" id="userName"><span id="user"></span>
+                    <label contenteditable="false">密码:</label>
+                    <input type="password" placeholder="请输入密码" id="password">
+                    <br/>
+                    <button type="text" class="btn" id="login">登录</button>
+                    <button type="reset" class="btn">重置</button>
+                    <div id="loginInfo" class="loginInfo"></div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="tab-pane" id="panel-1123">
+             <span id="qqLoginBtn"><img src='img/qqlogin.png'/></span>
+             <script type="text/javascript">
+                 QC.Login({
+                     btnId:"qqLoginBtn"
+                 });
+             </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>

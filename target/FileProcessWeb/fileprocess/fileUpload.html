@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+          $(function(){
+              $("#uploadnext").click(function(){
+                  var data={};
+                  data.status="2";
+                  $.post($.URL.file.changeStatus,data,changeStatusCallback,"json");
+              });
+          });
+          function changeStatusCallback(data){
+              if(data.code==200){
+                  $.post($.URL.file.getFileStatus,null,getFileStatusCallback,"json");
+              }
+          }
+          function getFileStatusCallback(data){
+              if(data.code==200){
+                  var status=data.data;
+                  $("#o_status").val(status);
+                  changeDivStyle();
+              }
+          }
+    </script>
+</head>
+<body>
+<div id="fileDiv">
+<div style="width: 70%;margin-left: 200px">
+    <form action="rs/file/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="filename" class="fileUpload" multiple>
+        <button  id="px-submit" type="submit" >上传</button>
+        <button id="px-clear" type="reset" >取消</button>
+    </form>
+    <script type="text/javascript">
+        jQuery(function($){
+            $('.fileUpload').fileUploader();
+        });
+    </script>
+    <div id="uploadFinishDiv"><button class="btn" style="float: right;margin-right: 200px" id="uploadnext">下一步</button></div>
+</div>
+</div>
+</body>
+</html>

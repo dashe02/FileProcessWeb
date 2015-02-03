@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="lib/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+    <script src="lib/ligerUI/js/core/base.js" type="text/javascript"></script>
+    <script src="lib/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
+    <script src="lib/ligerUI/js/plugins/ligerComboBox.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function (){
+            $.post($.URL.file.getDownloadFiles,null,getDownloadFilesCallback,"json");
+            function getDownloadFilesCallback(data){
+                if(data.code==200){
+                    if(data.data==null||data==undefined){
+                        alert("没有要下载的文件!");
+                    }else{
+                        var fileData=[];
+                        var itemD={};
+                        itemD.text="要下载的文件";
+                        var childData=[];
+                        for(i=0;i<data.data.length;i++){
+                            var item={};
+                            item.text=data.data[i];
+                            childData.push(item);
+                        }
+                        itemD.children=childData;
+                        fileData.push(itemD);
+                        $("#tree2").ligerTree({
+                            data: fileData,
+                            isExpand:true,
+                            slide:true,
+                            nodeWidth:240
+                        });
+                        manager=$("#tree2").ligerGetTreeManager();
+                        /*manager.collapseAll();*/
+                        $("#tree2").ligerTree({onCheck:function(node,e){
+                            $("#pre").attr("disabled",false);
+                            if(manager.getChecked()==null||manager.getChecked()==""){
+                                $("#pre").attr("disabled",true);
+                            }
+                        }});
+                    }
+                }
+            }
+            $("#pre").click(function(){
+                $("#preMain").css("display","block");
+                var nodes=manager.getChecked();
+                var text="";
+                for(var i=0;i<nodes.length;i++){
+                    text+=nodes[i].data.text+",";
+                }
+                $.post($.URL.file.preDownloadFile,{"text":text},preDownloadFileCallback,"json");
+            });
+            $("#clear").click(function(){
+                $("#accordion-13133").html("");
+            });
+            $("#next").click(function(){
+                var data={};
+                data.status="4";
+                $.post($.URL.file.changeStatus,data,changeStatusCallback,"json");
+            });
+        });
+        function changeStatusCallback(data){
+            if(data.code==200){
+                $.post($.URL.file.getFileStatus,null,getFileStatusCallback,"json");
+            }
+        }
+        function preDownloadFileCallback(data){
+            if(data.code==200){
+                $("#accordion-13133").html("");
+                for(i=0;i<data.data.length;i++){
+                    var id=data.data[i].id;
+                    var title=data.data[i].name;
+                    var content=data.data[i].content;
+                    var accordion_toggle="<a class='accordion-toggle collapsed' data-toggle='collapse' data-parent='#accordion-13133' href='#accordion-element-"+id+"' id='accordion-title-"+id+"'>"+title+"</a>";
+                    var accordion_body="<div id='accordion-element-"+id+"' class='accordion-body collapse'>";
+                    var accordion_inner="<div class='accordion-inner'>"+content+"<div><button class='btn' style='float: right' id='download"+id+"'>下载</button></div></div>";
+                    $("#accordion-13133").append(accordion_toggle).append(accordion_body).append(accordion_inner);
+                    var downloadId="#download"+id;
+                    $(downloadId).click(function(){
+                         var titleId="#accordion-title-"+this.id.substring(8,this.id.length);
+                         var title=$(titleId).text();
+                         window.location.href="rs/file/downloadFile/"+title;
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="fileDiv">
+    <div class="tree">
+        <ul id="tree2" style="width: 224px"></ul>
+    </div>
+    <div style="width: 70px;float: left">
+    <div>
+        <button class="btn"  id="pre" style="float: left;margin-top: 50px" disabled>预览</button>
+    </div>
+    <div>
+        <button class="btn"  id="clear" style="float: left;margin-top: 50px">清除</button>
+    </div>
+    <div>
+       <button class="btn"  id="next" style="float: left;margin-top: 50px">下一步</button>
+    </div>
+    </div>
+    <div class="rule" id="preMain">
+        <div id="preContent">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="accordion" id="accordion-13133">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+</body>
+</html>

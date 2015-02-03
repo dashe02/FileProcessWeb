@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="fileprocess/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="fileprocess/js/jquery.fileUploader.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $.post($.URL.file.getFileStatus,null,getFileStatusCallback,"json");
+            $("#preBtn").click(function(){
+                $.post($.URL.file.getFileStatus,null,getCurrentStatusCallback,"json");
+
+            });
+        });
+        function getFileStatusCallback(data){
+            if(data.code==200){
+                var status=data.data;
+                $("#o_status").val(status);
+                changeDivStyle();
+            }
+        }
+        function getCurrentStatusCallback(data){
+            if(data.code=200){
+                var ss=data.data;
+                var s=ss-1;
+                var d={};
+                d.status=s;
+                $.post($.URL.file.changeStatus,d,changeStatusCallback,"json");
+            }
+        }
+        function changeStatusCallback(data){
+            if(data.code==200){
+                $.post($.URL.file.getFileStatus,null,getFileStatusCallback,"json");
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="fileMain">
+<input type="hidden" value="" id="o_status" /><!--后台传到页面的数据-->
+<div class="stepInfo">
+    <ul>
+        <li></li>
+        <li></li>
+    </ul>
+    <div class="stepIco stepIco1" id="create">1
+        <div class="stepText" id="createText">未处理</div>
+    </div>
+    <div class="stepIco stepIco2" id="check">2
+        <div class="stepText" id="checkText">上传文件完毕</div>
+    </div>
+    <div class="stepIco stepIco3" id="produce">3
+        <div class="stepText" id="produceText">文件处理完毕</div>
+    </div>
+    <div class="stepIco stepIco4" id="delivery">4
+        <div class="stepText" id="deliveryText">下载完毕</div>
+    </div>
+    <div class="stepIco stepIco5" id="received">5
+        <div class="stepText" id="receivedText">完毕</div>
+    </div>
+</div>
+<div id="fileContent"></div>
+<div id="preDiv"><button class="btn" style="float: right;margin-right: 200px" id="preBtn">上一步</button></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="user/passwordValidator/css/passwordValidator.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function(){
+            $(".registerform").Validform({
+                tiptype:2,
+                usePlugin:{
+                    passwordstrength:{
+                        minLen:6,
+                        maxLen:18
+                    }
+                }
+            });
+            $("#register").click(function(){
+               var user=$("#user").val();
+               var pass=$("#pass").val();
+               var data={};
+                data.user=user;
+                data.pass=pass;
+                $.post($.URL.user.register,data,registerCallback,"json");
+            });
+        });
+        function registerCallback(data){
+            if(data.code==200){
+                alert("注册成功！");
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="registerform">
+                <fieldset>
+                    <legend>用户注册</legend>
+                    <label>用户名:</label><input type="text" id="user"/>
+                    <label>密码:</label><input type="password" id="pass" class="inputxt" datatype="*6-18" errormsg="密码至少6个字符,最少18个字符"/>
+                    <div class="passwordStrength">密码强度： <span>弱</span><span>中</span><span class="last">强</span></div>
+                    <br/>
+                    <div class="Validform_checktip"></div>
+                    <button type="text" class="btn" id="register">注册</button>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
